@@ -1,0 +1,9 @@
+Small program that turn an LED connected on D0 on/off through the cloud
+
+- Open the .html file in an editor and change the below line to the correct Device ID and Access Token
+
+<form action="https://api.particle.io/v1/devices/your-device-ID-goes-here/led?access_token=your-access-token-goes-here" method="POST">  <form action="https://api.particle.io/v1/devices/3f003a000947363339343638/led?access_token=389d99b9cc2cbc144bac12a89e19bf8c15653f8d" method="POST">
+
+- Flash the Photon with the .bin file
+- Open the .html file in a browser and control the LED
+
