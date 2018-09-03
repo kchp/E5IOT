@@ -1,6 +1,7 @@
-// ----------------
+// --------------------------------
 // Motion detector
-// ----------------
+// Publish and Subscribe functions
+// --------------------------------
 /**
  * The code uses an LED and LDR that are facing each other
  * when the light beam is broken the program detects this and gives notification
@@ -26,6 +27,13 @@ void setup() {
     pinMode(ldr, INPUT);
     pinMode(pwr, OUTPUT);
     
+    // Subscribing to a buddy's event using Particle.subscribe
+    Particle.subscribe("buddy_event_name", myHandler);
+    /**
+     * Subscribe will listen for the event "buddy_event_name" and, when it finds it, will run the function myHandler()
+     * "buddy_event_name" should be replaced with the actual unique event name from the buddy's Photon
+     */
+    
     // initial startup conditions
     digitalWrite(pwr, HIGH);
     
@@ -40,10 +48,10 @@ void setup() {
     delay(500);
     
     // time to read the LDR
-    int on_1 = analogRead(ldr); // read the LDR
+    int off_1 = analogRead(ldr); // read the LDR
     delay(200);                 // wait 200ms
-    int on_2 = analogRead(ldr); // read the LDR
-    delay(300);                 // wait 300ms
+    int off_2 = analogRead(ldr); // read the LDR
+    delay(1000);                 // wait 300ms
     
     // flash the D7 LED to indicate reading completed
     digitalWrite(onLed, HIGH);
@@ -63,10 +71,10 @@ void setup() {
     digitalWrite(onLed, LOW);
     
     // read the LDR again
-    int off_1 = analogRead(ldr); // read the LDR
+    int on_1 = analogRead(ldr); // read the LDR
     delay(200);                  // wait 200ms
-    int off_2 = analogRead(ldr); // read the LDR
-    delay(1000);                 // wait 1000ms
+    int on_2 = analogRead(ldr); // read the LDR
+    delay(300);                 // wait 1000ms
     
     // flash the D7 LED 3 times to indicate reading completed
     digitalWrite(onLed, HIGH);
@@ -110,11 +118,11 @@ void loop() {
              */
             
             // send publish to the cloud
-            Particle.publish("beamStatus","intact",60,PRIVATE);
+            Particle.publish("beamStatus","intact");
             // flash D7 LED on and off
-            digitalWrite(onLed, HIGH);
-            delay(500);
-            digitalWrite(onLed, LOW);
+            //digitalWrite(onLed, HIGH);
+            //delay(500);
+            //digitalWrite(onLed, LOW);
             
             // Set the flag to reflect current status
             beamBroken = false;
@@ -129,11 +137,11 @@ void loop() {
          */
         if(beamBroken == false) {
             // send publish to the cloud
-            Particle.publish("beamStatus","broken",60,PRIVATE);
+            Particle.publish("beamStatus","broken");
             // flash D7 LED on and off
-            digitalWrite(onLed, HIGH);
-            delay(500);
-            digitalWrite(onLed, LOW);
+            //digitalWrite(onLed, HIGH);
+            //delay(500);
+            //digitalWrite(onLed, LOW);
             
             // Set the flag to reflect current status
             beamBroken = true;
@@ -143,3 +151,32 @@ void loop() {
         }
     }
 }
+
+void myHandler(const char *event, const char *data) {
+    /**
+     * Particle.subscribe handlers are void functions, which means they don't return anything.
+     * They take 2 variables-- the name of the event, and any data that goes along with the event.
+     * In this case, the event will be "buddy_event_name" and the data will be "intact" or "broken".
+     * 
+     * Since the input here is a char, we can't do
+     *      data == "intact"
+     *      or
+     *      data == "broken"
+     * chars don't work that way. Instead we're going to strcmp(), which compares 2 chars.
+     * If they are the same, strcmp will return 0
+     */
+     
+    if(strcmp(data,"intact") == 0) {
+        // if buddy's beam is intact, then turn your board LED off
+        digitalWrite(onLed, LOW);
+    }
+    else if (strcmp(data,"broken") == 0) {
+        // if buddy's beam is broken, then turn your board LED on
+        digitalWrite(onLed, HIGH);
+    }
+    else {
+        // do nothing if something else is received
+    }
+}
+
+
