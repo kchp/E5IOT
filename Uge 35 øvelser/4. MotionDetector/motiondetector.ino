@@ -118,8 +118,12 @@ void loop() {
              */
             
             // send publish to the cloud
-            Particle.publish("beamStatus","intact");
-            // flash D7 LED on and off
+            Particle.publish("statusBadKitty","intact");
+            /**
+             * publish event and flash D7 LED on and off
+             * this is a private publish that will only be visiable to my devices
+             */
+            //Particle.publish("beamStatus","broken",60,PRIVATE); 
             //digitalWrite(onLed, HIGH);
             //delay(500);
             //digitalWrite(onLed, LOW);
@@ -137,8 +141,8 @@ void loop() {
          */
         if(beamBroken == false) {
             // send publish to the cloud
-            Particle.publish("beamStatus","broken");
-            // flash D7 LED on and off
+            Particle.publish("statusBadKitty","broken");
+            //Particle.publish("beamStatus","broken",60,PRIVATE); 
             //digitalWrite(onLed, HIGH);
             //delay(500);
             //digitalWrite(onLed, LOW);
@@ -178,5 +182,3 @@ void myHandler(const char *event, const char *data) {
         // do nothing if something else is received
     }
 }
-
-

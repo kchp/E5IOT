@@ -13,8 +13,8 @@ Simple motion detector
 	- When it turns off readings will be taken
 	- D7 LED will flash twice to indicate readings completed
 
-- When the beam is broken D7 LED will flash once and current status will be published to the cloud
+- When the beam is broken the current status will be published to the cloud
   and the same will happen when the beam is reestablished
 
-- Cloud interface not yet completed
+- Another device will be able to subscribe and listen for the event statusBadKitty
 
