@@ -1,15 +1,21 @@
-function [freq] = FindFreq(x)
+function [freq] = FindFreq(x,fs)
 % Function used to find the frequency of the string
-
 % All frequencies are in Hz
-Fs = 1024;  % Extract sample frequency from signal
+% -------------------------------------------------------
+% x: signal to be analysed
+% fs: sampling frequency used
+% -------------------------------------------------------
 
+x = [x zeros(1,2^12-length(x))]; % zeropad signal for better frequency resolution
+N = length(x);  % Number of samples in signal
+fIndex = 0:fs/N:fs/2; % Frequency resolution
+
+% Filter signal to suppress carrier frequency
+x = highpass(x,60,fs);
 
 % Analyse signal
-x = highpass(x,60,Fs);
-Xdft = fft(x);
-[~,I] = max(abs(Xdft));
-fIndex = 0:Fs/length(x):Fs/2;
+Xdft = fft(x,N);
+[~,I] = max(abs(Xdft)); % Find index containing max peak value
 
-% Return value
+% Return frequency of found index
 freq = fIndex(I);
